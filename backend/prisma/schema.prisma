@@ -1,0 +1,106 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  title     String
+  pinned    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role      String   // "user" | "assistant" | "system"
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Sensor {
+  id               String   @id @default(uuid())
+  slug             String   @unique
+  name             String
+  category         String   // "Environmental" | "Motion" | "Gas" | "Electrical" | "Pressure" | "Proximity" | "Optical" | "Biometric"
+  description      String
+  aliases          String   // JSON array string
+  specs            String   // JSON object string
+  pinout           String   // JSON array string
+  sampleCode       String   // JSON object string
+  calibrationGuide String
+  industrialUse    String
+  commonMistakes   String   // JSON array string
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Protocol {
+  id               String   @id @default(uuid())
+  slug             String   @unique
+  name             String
+  category         String   // "Wireless" | "Wired" | "Industrial" | "Web"
+  layer            String   // "Application" | "Transport" | "Network" | "Data Link" | "Physical"
+  summary          String
+  mermaidDiagram   String
+  specs            String   // JSON object string
+  pros             String   // JSON array string
+  cons             String   // JSON array string
+  realWorldUseCases String  // JSON array string
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Project {
+  id                   String   @id @default(uuid())
+  title                String
+  idea                 String
+  budget               Float
+  currency             String   @default("INR")
+  microcontroller      String
+  architectureDiagram  String
+  components           String   // JSON array string
+  connectionFlow       String   // JSON array string
+  roadmap              String   // JSON array string
+  estimatedTotalCost   Float
+  challenges           String   // JSON array string
+  futureImprovements   String   // JSON array string
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model LearningProgress {
+  id             String   @id @default(uuid())
+  topicId        String   @unique
+  topicTitle     String
+  currentStep    Int      @default(0)
+  totalSteps     Int      @default(5)
+  completed      Boolean  @default(false)
+  quizPassed     Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}
+
+model Prompt {
+  id            String   @id @default(uuid())
+  category      String   // "Troubleshooting" | "Sensors" | "Protocols" | "Code" | "Project Ideas" | "Learning"
+  title         String
+  preview       String
+  content       String
+  targetFeature String   // route path
+  isFavorite    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model UserStats {
+  id             String   @id @default("user_default")
+  streakCount    Int      @default(5)
+  lastActiveDate String
+  activityLog    String   // JSON array string
+}
