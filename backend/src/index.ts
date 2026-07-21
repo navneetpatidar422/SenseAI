@@ -18,6 +18,7 @@ import dashboardRoutes from './routes/dashboardRoutes.js';
 import { runSeed } from './seed/runSeed.js';
 
 dotenv.config();
+console.log("⚡ Groq API Key Loaded:", !!(process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.trim() !== ''));
 
 const app = express();
 const PORT = process.env.PORT || 5000;
